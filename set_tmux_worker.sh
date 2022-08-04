@@ -16,7 +16,8 @@ echo "Creating tmux panes..."
 for j in {0..17}
 do
     tmux split-window -v -p 80 -t ${j}
-    tmux select-layout -t ${j} tiled
+    tmux select-layout tiled
+    sleep 0.1
 done
 
 echo "Configuring fds in tmux panes..."
@@ -56,7 +57,7 @@ if [ $ARCH == "spright" ]; then
   tmux send-keys -t 1 "locust -u 25000 -r 500 -t 3m --csv kn --csv-full-history -f spright-locustfile.py --headless  -H http://10.10.1.1:8080 --master --expect-workers=16" Enter
 else
   echo "Run Knative's locust master"
-  tmux send-keys -t 1 "locust -u 5000 -r 200 -t 3m --csv kn --csv-full-history -f kn-locustfile.py --headless  -H http://${IP}:${PORT} --master --expect-workers=16" Enter
+  tmux send-keys -t 1 "locust -u 5000 -r 200 -t 3m --csv kn --csv-full-history -f locustfile.py --headless  -H http://${IP}:${PORT} --master --expect-workers=16" Enter
 fi
 
 sleep 0.1
@@ -69,8 +70,8 @@ do
       tmux send-keys -t ${j} "locust -f spright-locustfile.py --worker" Enter
     else
       echo "Run Knative's locust worker"
-      tmux send-keys -t ${j} "locust -f kn-locustfile.py --worker" Enter
+      tmux send-keys -t ${j} "locust -f locustfile.py --worker" Enter
     fi
 done
 
-sleep 0.1
+sleep 10000
